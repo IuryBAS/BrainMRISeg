@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import nibabel as nib
+import matplotlib.pyplot as plt
 from glob import glob
 
 
@@ -62,6 +64,27 @@ def build_dataframe(dataset_path, csv_filename, filter_with_mask=True):
         df_subjects.loc[sub[0], ['t1', 'seg1', 'seg2', 'seg3']] = dict_nii
 
     return df_subjects
+
+
+def get_image(df, subject_id, slice_n, perspective):
+    subject = 'sub-{}'.format(subject_id)
+    image_path = df.loc[df['Subject'] == subject].t1.values[0]
+    img_mri = nib.load(image_path).get_fdata()
+    if perspective == 'a':
+        img_slice = img_mri[:, slice_n, :]
+    elif perspective == 's':
+        img_slice = img_mri[slice_n, :, :]
+    elif perspective == 'c':
+        img_slice = img_mri[:, :, slice_n]
+
+    img = np.transpose(img_slice)
+    return img
+
+
+def show_nii(img):
+    img = np.flip(img)
+    plt.imshow(img, cmap='gray')
+    plt.show()
 
 
 def normalize_img(image, imax=8, dtype=np.uint8):
