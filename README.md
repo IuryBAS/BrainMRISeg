@@ -19,7 +19,8 @@ As imagens são provenientes de ressonância magnética (IRM) da região cerebra
 Utilizando algoritmos de segmentação como os mensionados posteriormente,
  a ideia principal é obter segmentações de interesse a partir de pontos 
 dados pelo operador humano, de qualidade equivalente as realizadas em um
- processo inteiramente manual por um especialista. Adicionalmente, também objetivamos a exploração de como procedimentos de
+ processo inteiramente manual por um especialista. 
+ Adicionalmente, também objetivamos a exploração de como procedimentos de
  preprocessamento podem auxiliar em melhores resultados na etapa de 
 segmentação. Por fim, é de interesse realizar uma análise comparativa 
 entre os métodos de segmentação explorados, bem como entre os resultados
