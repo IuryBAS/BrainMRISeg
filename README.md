@@ -88,6 +88,8 @@ Figura 3(a) Imagem exemplo de IRM cerebral de região extraída por meio de inte
     - O método _Watershed_ é executado a partir da imagem preprocessada e das sementes informadas, retornando as regiões segmentadas, cada qual com seu respectivo rótulo;
     - O segmento da região de interesse pode então ser aplicado como uma máscara sobre a imagem MRI, extraindo assim apenas a região de interesse.
 - ### Avaliação e comparação dos resultados
+    - Análises quantitativa entre as segmentações geradas pelos métodos de segmentação e as máscaras humanas. 
+    - Análise qualitativa  visual das máscaras obtidas quando projetadas sobre a imagem de ressonância e lado a lado com as máscaras de especialistas.
 
 ## Resultados preliminares
 Resultados de execuções preliminares com o método de segmentação Watershed são descritos detalhadamente no [Notebook de teste com Watershed](notebooks/%5BRelatorio%20parcial%5D%20Testes%20watershed.ipynb)
