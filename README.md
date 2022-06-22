@@ -64,6 +64,13 @@ Figura 3(a) Imagem exemplo de IRM cerebral de região extraída por meio de inte
     - Utilização de filtros suavizantes, como filtros de média, para retirada de ruídos e segmentar de maneira mais eficiente
     - Como as imagens estão em escala de cinza, limiarizar para a utilização de processos morfológicos sobre a imagem de forma a encontrar bordas e preenchelas. Limiarizar é utilizado também no processo de segmentação por regiões para a escolha de uma semente.
     - Utilizar matrizes das derivadas tanto na utilização da segmentação por watershed, quanto para detectar traços finos e grossos.
+- ### Segmentação por região
+    - A ideia esta em selecionar pixels "sementes" para o crescimento da região dado uma condição predefinida.
+    - Como nosso problema é em escala de cinza, procuraremos por uma condição elacionada a intensidade dos pixels.
+    - O processo começa dizendo quem são as sementes e vendo a componente conexa que o contem. Com isso, erodir cada componete conexo a um pixel.
+    - Construir uma imagem que é 1 apenas se satisfaz se a imagem de entrada satisfaz a condição.
+    - Formemos uma imagem anexando cada semente a cada semente todos os pontos rotulados com o número 1 na imagem construida que estão 8-conectados a essa semente.
+    - Rotular cada região segmentada
 - ### Segmentação Watershed
     - Uma imagem previamente preprocessada é utilizada como entrada para este método. Os pré-processamentos podem incluir os diversos procedimentos explicitados anteriormente, em especial a redução de ruídos, cálculo de gradientes para obtenção de mínimos locais e processos morfológicos para obter bordas/fronteiras bem estabelecidas;
     - Também é informado quais os marcadores inicias (sementes) para o início do processo. Dado o objetivo de segmentação guiada, essas sementes devem ser previamente informadas por um operador humano. Ao menos 3 sementes são necessárias: Uma do _background_ real da imagem MRI, isto é, a região que não contem voxeis referentes a região cerebral. Esta primeira semente é automaticamente definida pelo método como sendo o pixel (0, 0); uma semente da região interna do cérebro, porém fora da região de interesse; e uma última semente na região de interesse, sendo essa a região para qual de fato se deseja obter a máscara como resultado. As duas últimas sementes devem ser informadas pelo usuário;
