@@ -53,3 +53,21 @@ O objetivo assim é obter máscaras de segmentação como apresentada nas imagen
 !["Imagem exempo de IRM cerebral de região com região extraídae com mascara de segmentação"](imgs/ImgComMascara.png "Imagem exempo de IRM cerebral de região com região extraídae com mascara de segmentação")
 
 Figura 3(a) Imagem exemplo de IRM cerebral de região extraída por meio de intervenção cirúrgica, sem máscara de segmentação; (b) Imagem exemplo de IRM cerebral de região com região extraída e com máscara de segmentação. Fonte: [EPISURG dataset](https://rdr.ucl.ac.uk/articles/dataset/EPISURG_a_dataset_of_postoperative_magnetic_resonance_images_MRI_for_quantitative_analysis_of_resection_neurosurgery_for_refractory_epilepsy/9996158/1)
+
+## Etapas de execução do projeto
+- ### Seleção do conjunto de dados
+    - Dado todo o conjunto de imagens do conjunto [EPISURG dataset](https://rdr.ucl.ac.uk/articles/dataset/EPISURG_a_dataset_of_postoperative_magnetic_resonance_images_MRI_for_quantitative_analysis_of_resection_neurosurgery_for_refractory_epilepsy/9996158/1), a partir dos pacientes presentes no arquivo `subjects.csv`, informações inicias são construídas como um `Dataframe`;
+    - O conjunto construído é filtrado para conter apenas exemplos que possuam ao menos uma máscara de segmentação presente. Cada paciente pode ter até um máximo de três máscaras providas por especialistas humanos, mas ao menos uma se faz necessária para comparativo como _ground-truth_. Os demais exemplos sem nenhuma máscara são descartados;
+    - Os pacientes selecionados e filtrados tem os caminhos dos arquivos `.nii` (extensão para imagens de MRI) agregados aos seus dados no `Dataframe`, tanto para o arquivo MRI T1, como para as máscaras de segmentação.
+    - Ao fim do processo têm-se o conjunto de dados pronto para uso nas demais etapas.
+- ### Preprocessamento
+- ### Segmentação Watershed
+    - Uma imagem previamente preprocessada é utilizada como entrada para este método. Os pré-processamentos podem incluir os diversos procedimentos explicitados anteriormente, em especial a redução de ruídos, cálculo de gradientes para obtenção de mínimos locais e processos morfológicos para obter bordas/fronteiras bem estabelecidas;
+    - Também é informado quais os marcadores inicias (sementes) para o início do processo. Dado o objetivo de segmentação guiada, essas sementes devem ser previamente informadas por um operador humano. Ao menos 3 sementes são necessárias: Uma do _background_ real da imagem MRI, isto é, a região que não contem voxeis referentes a região cerebral. Esta primeira semente é automaticamente definida pelo método como sendo o pixel (0, 0); uma semente da região interna do cérebro, porém fora da região de interesse; e uma última semente na região de interesse, sendo essa a região para qual de fato se deseja obter a máscara como resultado. As duas últimas sementes devem ser informadas pelo usuário;
+    - O método _Watershed_ é executado a partir da imagem preprocessada e das sementes informadas, retornando as regiões segmentadas, cada qual com seu respectivo rótulo;
+    - O segmento da região de interesse pode então ser aplicado como uma máscara sobre a imagem MRI, extraindo assim apenas a região de interesse.
+- ### Avaliação e comparação dos resultados
+
+## Resultados preliminares
+Resultados de execuções preliminares com o método de segmentação Watershed são descritos detalhadamente no [Notebook de teste com Watershed](notebooks/%5BRelatorio%20parcial%5D%20Testes%20watershed.ipynb)
+
