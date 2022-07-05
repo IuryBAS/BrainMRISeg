@@ -43,7 +43,6 @@ def build_dataframe(dataset_path, csv_filename, filter_with_mask=True):
                                   | df_subjects['Rater2']
                                   | df_subjects['Rater3']
                                   ]
-
     for sub in df_subjects.iterrows():
         sub_id = sub[1]['Subject']
         nii_paths = _get_nii_paths(dataset_path, sub_id)
@@ -62,22 +61,21 @@ def build_dataframe(dataset_path, csv_filename, filter_with_mask=True):
                 t1 = nii_f
         dict_nii = {'t1': t1, 'seg1': seg1, 'seg2': seg2, 'seg3': seg3}
         df_subjects.loc[sub[0], ['t1', 'seg1', 'seg2', 'seg3']] = dict_nii
-
     return df_subjects
 
 
 def get_image(df, subject_id, slice_n, perspective, mask=False):
     '''
-    Function to return an slice of an specific subject given a desired 
+    Function to return an slice of an specific subject given a desired
     perspective as a regular bi-dimensional gray scale image or binary segment
     mask
 
     Params:
-        df: A dataframe containing the subjects ids and the paths for the 
+        df: A dataframe containing the subjects ids and the paths for the
         nii files of the T1 volumes and segmentation masks
         subject_id: The id of the target subject
         slice_n: The number of the desired volume slice
-        perspective: The key for the desired perspective of the volume, 
+        perspective: The key for the desired perspective of the volume,
         which can be "a" for axial, "c" for coronal and "s" for saggital
         mask: When return the T1 volume or the segmentation mask
 
@@ -134,3 +132,21 @@ def normalize_img(image, imax=8, dtype=np.uint8):
     # passed as parameter
     img_sub_norm = (img_sub_norm * ((2**imax) - 1)).astype(dtype)
     return img_sub_norm
+
+
+def dilation(f, w):
+    m, n = w.shape
+
+    mf, nf = f.shape
+
+    a = int((m - 1) / 2)
+    b = int((n - 1) / 2)
+
+    r = np.copy(f)
+
+    for xf in range(a, mf - a):
+        for yf in range(b, nf - b):
+            sub_f = f[xf - a: xf + a + 1, yf - b: yf + b + 1]
+            r[xf, yf] = sub_f.max()
+
+    return r.astype(np.uint8)

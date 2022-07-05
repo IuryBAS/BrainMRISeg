@@ -4,6 +4,7 @@ import utils
 import matplotlib.pyplot as plt
 import math
 import args_test_watershed
+import chan_vese
 
 def plot_mosaic(slices_array, slice_range):
 
@@ -56,6 +57,17 @@ def apply_batch_watershed(df, subject_id, slices_range, perspective, norm_thres,
     plt.show()
 
 
+def apply_batch_chan_vese(df, subject_id, slices_range, perspective, mu, lambda1, lambda2, x, y):
+    slices_array = get_batch_data(df, subject_id, slices_range, perspective)
+    seg_masks_array = []
+    for slice in slices_array:
+        img_seg = chan_vese.apply_chan_vese(slice, (x, y), mu, lambda1, lambda2)
+        seg_masks_array.append(img_seg)
+
+    plot_mosaic(seg_masks_array, slices_range)
+    plt.show()
+
+
 if __name__ == '__main__':
 
     df = utils.build_dataframe('../Episurg', 'subjects.csv')
@@ -72,6 +84,10 @@ if __name__ == '__main__':
         y = case_test['y']
         outer_x = case_test['outer_mark_x']
         outer_y = case_test['outer_mark_y']
+        mu = case_test['mu']
+        lambda1 = case_test['lambda1']
+        lambda2 = case_test['lambda2']
+        apply_batch_chan_vese(df, sub_id, slices_range, perspective, mu, lambda1, lambda2, x, y)
         apply_batch_watershed(df, sub_id, slices_range, perspective, norm_thres,
                               morphy, x, y, outer_x, outer_y)
 

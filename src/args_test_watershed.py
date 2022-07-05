@@ -12,7 +12,10 @@ CASE_1 = {'subject_id': '0018',
           'x': 116,
           'y': 85,
           'outer_mark_x': 109,
-          'outer_mark_y': 99
+          'outer_mark_y': 99,
+          'mu': 0.15,
+          'lambda1': 1,
+          'lambda2': 1
           }
 
 CASE_2 = {'subject_id': '0317',
@@ -27,7 +30,10 @@ CASE_2 = {'subject_id': '0317',
           'x': 155,
           'y': 103,
           'outer_mark_x': 109,
-          'outer_mark_y': 99
+          'outer_mark_y': 99,
+          'mu': 0.1,
+          'lambda1': 1,
+          'lambda2': 1
           }
 
 CASE_3 = {'subject_id': '0023',
@@ -41,7 +47,10 @@ CASE_3 = {'subject_id': '0023',
           'x': 143,
           'y': 143,
           'outer_mark_x': 109,
-          'outer_mark_y': 99
+          'outer_mark_y': 99,
+          'mu': 0.08,
+          'lambda1': 1,
+          'lambda2': 1
           }
 
 CASE_4 = {'subject_id': '0035',
@@ -55,7 +64,10 @@ CASE_4 = {'subject_id': '0035',
           'x': 166,
           'y': 100,
           'outer_mark_x': 109,
-          'outer_mark_y': 99
+          'outer_mark_y': 99,
+          'mu': 0.1,
+          'lambda1': 1,
+          'lambda2': 1.3
           }
 
 
