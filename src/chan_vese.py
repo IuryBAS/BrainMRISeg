@@ -1,6 +1,6 @@
 import numpy as np
 from skimage.segmentation import chan_vese
-from src import utils
+import utils
 
 
 def apply_chan_vese(mri_img, point_markers, mu, lambda1, lambda2):

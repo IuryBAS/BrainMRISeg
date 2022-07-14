@@ -24,9 +24,13 @@ def apply_morphology(input_image, **kwargs):
     '''
     img = input_image
 
+    # Apply each preprocessing procedure in sequence, given in as the kwargs 
+    # of the function
     for kw in kwargs:
         apply_morph = kwargs[kw]
+        # Get the method procedure to be perfomed
         method = apply_morph['method']
+        # Get the structual element
         struct_element = apply_morph['se']
         img = method(img, struct_element)
 
@@ -50,8 +54,11 @@ def apply_watershed(input_image, point_markers, same_markers=False):
         An segmentated mask of the image
     '''
     markers = np.zeros_like(input_image)
+    # Set a seed in the background area of the MRI image, outside of the brain
     markers[0][0] = 1
 
+    # Set labels for each ponint marker. If multiple markers represent the same
+    # segment, label them with the same value. 
     for label, coord_p in enumerate(point_markers):
         y, x = coord_p
         if same_markers:
