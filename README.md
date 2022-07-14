@@ -91,6 +91,41 @@ Figura 3(a) Imagem exemplo de IRM cerebral de região extraída por meio de inte
     - Análises quantitativa entre as segmentações geradas pelos métodos de segmentação e as máscaras humanas. 
     - Análise qualitativa  visual das máscaras obtidas quando projetadas sobre a imagem de ressonância e lado a lado com as máscaras de especialistas.
 
-## Resultados preliminares
+----------------
+## Métodos de Segmentação
+Nesta seção são apresentados os conceitos gerais de funcionamento de ambos os métodos de segmentação adotados neste projeto: O método de segmentação Watershed e o método de segmentação Chan-Vese.
+
+
+### Método Watershed
+
+O método watershed de segmentação possui uma abordagem topológica, buscando agir de maneira semelhante a inundação de bacias por um agente líquido a partir de pontos de infiltração. Para tanto, uma imagem a ser segmentada é definida em três tipos de pontos: pontos que representam um mínimo local; pontos que, considerando o cair de uma gota d’água, está tenha alta probabilidade de rolar em direção ao mínimo local daquela região; e pontos limiares, onde a probabilidade da gota d’água rolar para qualquer um dos lados é igual. 
+
+O mecanismo de funcionamento do Watershed é comparável a realizar a inundação de regiões a partir de um fluxo contínuo de água que emerge de determinados pontos, dispostos nas regiões de mínimos locais. Esta inundação é realizada de maneira paralela entre todas as bacias existentes. Em determinado momento, é esperado que as inundações de cada bacia alcancem um estado onde estejam prestes a se mesclar com outras bacias adjacentes. Neste momento, o método deve criar uma barreira que impeça esta mesclagem, dividindo de maneira determinante as bacias em segmentos distintos.
+
+Desta forma, a aplicação da segmentação Watershed exige que a imagem de entrada tenha características que permitam esse processo ocorrer de forma adequada, isto é, as regiões precisam ter bordas mais ou menos definidas, e com intensidade nos valores dos pixeis na região interna as bordas que apresentem um mínimo local. Para tanto, processos morfológicos, como dilatação, _closing_, e aplicação de filtros para obtenção de bordas por meio de gradientes, são de imensa valia como etapas de pré-processamento. 
+
+Os pontos onde se inicia o processo de inundação são chamados de sementes (ou marcadores). Tais sementes podem ser explicitamente definidas por um agente humano, de maneira a guiar o processo e direcionar regiões bases onde se deseja ter a formação de segmentos. Por tanto, o método Watershed é adequado para processos de segmentação onde é possível ou se deseja inserir informações _a priori_, provenientes de conhecimento de contexto e de especialistas de domínio. 
+
+Por fim, devido ser um método que mistura conceitos de topologia, segmentação por limiar (_threshold_) e baseada em regiões, o Watershed agrupa diversas vantagens de cada abordagem e oferece resultados mais estáveis. 
+
+-----------------------
+
+## Execuções e Resultados
+
+### Casos de teste
+Foram selecionados 4 casos de teste distintos, com diferentes graus de dificuldade, tendo-se regiões de interesse com características que abrangem casos simples, com formatos mais uniformes, e casos mais desafiadores, em regiões limítrofes e formas complexas. Os mesmos casos de teste foram aplicados em ambos os métodos de segmentação. Cada caso possui entre 6 a 9 slices em cada, juntamente totalizando 31 slices.
+
+Um _slice_ de referência foi selecionado para cada caso de teste. A partir desse _slice_, técnicas de pré-processamento (quando necessário) e respectivos parâmetros, tanto das técnicas de pré-processamento quanto dos métodos de segmentação, foram ajustados para se obter uma segmentação satisfatória. Para o caso específico do método Watershed, esta etapa também inclui a definição da semente localizada na região de interesse.
+
+A ideia é que, obtendo-se uma boa segmentação para um _slice_ especifico, que os mesmos procedimentos e parâmetros possam ser executados em slices anteriores ou posteriores que também contenham a lesão de interesse. Desta forma, estima-se que possa ser automatizada uma segmentação em _batch_ da mesma lesão a medida que se manifesta em diversos _slices_.
+
+Os casos são definidos no arquivo `args_test.py`, contendo todas as informações necessárias para sua reprodução automática para a execução e avaliação deste projeto. 
+ 
+### Resultados
+
+#### Execução e resultados para a segmentação Watershed
+
+Devido a extensão das análises, para fins de organização as execuções e resultados são descritos separadamente no [notebook de Casos de teste com Watershed](notebooks/Analise_Casos_Watershed.ipynb)
+
 Resultados de execuções preliminares com o método de segmentação Watershed são descritos detalhadamente no [Notebook de teste com Watershed](notebooks/%5BRelatorio%20parcial%5D%20Testes%20watershed.ipynb)
 
