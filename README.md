@@ -75,13 +75,12 @@ Figura 3(a) Imagem exemplo de IRM cerebral de região extraída por meio de inte
     - Utilização de filtros suavizantes, como filtros de média, para retirada de ruídos e segmentar de maneira mais eficiente
     - Como as imagens estão em escala de cinza, limiarizar para a utilização de processos morfológicos sobre a imagem de forma a encontrar bordas e preenchelas. Limiarizar é utilizado também no processo de segmentação por regiões para a escolha de uma semente.
     - Utilizar matrizes das derivadas tanto na utilização da segmentação por watershed, quanto para detectar traços finos e grossos.
-- ### Segmentação por região
-    - A ideia esta em selecionar pixels "sementes" para o crescimento da região dado uma condição predefinida.
-    - Como nosso problema é em escala de cinza, procuraremos por uma condição elacionada a intensidade dos pixels.
-    - O processo começa dizendo quem são as sementes e vendo a componente conexa que o contem. Com isso, erodir cada componete conexo a um pixel.
-    - Construir uma imagem que é 1 apenas se satisfaz se a imagem de entrada satisfaz a condição.
-    - Formemos uma imagem anexando cada semente a cada semente todos os pontos rotulados com o número 1 na imagem construida que estão 8-conectados a essa semente.
-    - Rotular cada região segmentada
+- ### Segmentação Chan-Vese
+    - A ideia esta minimizar um funcional energia, como dito anteriormente.
+    - O processo começa dizendo quem são os parametros para a segmentação.
+    - Escolher a segmentação após as iterações.
+    - Escolher um ponto adequado para pegar a parte conexa da segmentação.
+    - Sobrepor a segmentação na imagem original para obter a imagem com máscara da segmentação.
 - ### Segmentação Watershed
     - Uma imagem previamente preprocessada é utilizada como entrada para este método. Os pré-processamentos podem incluir os diversos procedimentos explicitados anteriormente, em especial a redução de ruídos, cálculo de gradientes para obtenção de mínimos locais e processos morfológicos para obter bordas/fronteiras bem estabelecidas;
     - Também é informado quais os marcadores inicias (sementes) para o início do processo. Dado o objetivo de segmentação guiada, essas sementes devem ser previamente informadas por um operador humano. Ao menos 3 sementes são necessárias: Uma do _background_ real da imagem MRI, isto é, a região que não contem voxeis referentes a região cerebral. Esta primeira semente é automaticamente definida pelo método como sendo o pixel (0, 0); uma semente da região interna do cérebro, porém fora da região de interesse; e uma última semente na região de interesse, sendo essa a região para qual de fato se deseja obter a máscara como resultado. As duas últimas sementes devem ser informadas pelo usuário;
@@ -93,7 +92,19 @@ Figura 3(a) Imagem exemplo de IRM cerebral de região extraída por meio de inte
 
 ----------------
 ## Métodos de Segmentação
-Nesta seção são apresentados os conceitos gerais de funcionamento de ambos os métodos de segmentação adotados neste projeto: O método de segmentação Watershed e o método de segmentação Chan-Vese.
+Chan-Vese para contorno ativo é um método muito poderoso e flexível, permitindo segmentações de vários tipos de imagens, podendo ser bem útil quando métodos como thresholding ou gradientes não funcionem tão bem.
+
+Tal modelo se baseia na ideia de minimizar um funcional energia, podendo ser reformulado como curvas de nível, tornando assim mais fácil de resolver o problema.
+
+Como o objetivo é entender a análise de casos do método, apenas uma breve apresentação da ideia do método será mostrada.
+
+Seja C uma curva, $C^{1}[0, 1]$ por partes. Vamos denotar por $\omega$ como região interna de C. Além disso, iremos denotar por $c_{1}$ a intensidade média dos pontos interiores e $c_{2}$ a intensidade externa a curva C.
+
+O objetivo do método é minimizar o funcional energia
+
+$F(c_{1}$, $c_{2}$, C$)$ = $\mu$*Comprimento(C) + $\lambda_{1}$ * $\int_{inside\ (C)}$ |Image$[x,y]$ - $c_{1}$|$^{2}dxdy$ + $\lambda_{2}$ * $\int_{outside\ (C)}$ |Image$[x,y]$ - $c_{2}$|$^{2}dxdy$
+
+Esta é a ideia por trás do método.
 
 
 ### Método Watershed

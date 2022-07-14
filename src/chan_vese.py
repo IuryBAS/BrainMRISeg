@@ -4,6 +4,24 @@ import utils
 
 
 def apply_chan_vese(mri_img, point_markers, mu, lambda1, lambda2):
+    '''
+    Function to apply chan-vese segmentation on input image.
+
+    Params:
+        mri_img: The input image to be processed;
+        mu, lambda1, lambda: Variables of metod;
+
+    cha_vesse returns: An array cv with length 4, where:
+        cv[0]: Original image;
+        cv[1]: Segmentation after iterations;
+        cv[2]: Final level set;
+        cv[3]: Evolution of energy over iterations;
+
+    Returns:
+        An segmentated image with mask.
+
+
+    '''
     mask = np.zeros(mri_img.shape)
 
     cv = chan_vese(mri_img, mu, lambda1, lambda2, tol=1e-3,
@@ -17,6 +35,7 @@ def apply_chan_vese(mri_img, point_markers, mu, lambda1, lambda2):
 
     mask = mask.astype(np.uint8)
 
+    # Point to do morphology, taking the connected part of segmentation
     y, x = point_markers
 
     Xi = np.zeros(mri_img.shape)
