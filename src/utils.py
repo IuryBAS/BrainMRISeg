@@ -85,18 +85,23 @@ def get_image(df, subject_id, slice_n, perspective, mask=False):
 
     '''
     subject = 'sub-{}'.format(subject_id)
+    # If not a mask, get the mri image itself. If mask, return the human made
+    # mask for the slice subject. In this project, we consider only the mask 1
+    # for simplicity
     if not mask:
         image_path = df.loc[df['Subject'] == subject].t1.values[0]
     else:
         image_path = df.loc[df['Subject'] == subject].seg1.values[0]
     img_mri = nib.load(image_path).get_fdata()
+    # Get the image in the desired perspective
     if perspective == 'a':
         img_slice = img_mri[:, slice_n, :]
     elif perspective == 's':
         img_slice = img_mri[slice_n, :, :]
     elif perspective == 'c':
         img_slice = img_mri[:, :, slice_n]
-
+    
+    # Transpose de image to put it in the correct orientation
     img = np.transpose(img_slice)
     return img
 
