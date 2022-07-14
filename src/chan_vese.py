@@ -31,7 +31,7 @@ def apply_chan_vese(mri_img, point_markers, mu, lambda1, lambda2):
             flag = False
         Xi = X_i
 
-    # mri_marked = np.copy(mri_img)
-    # mri_marked[np.where(Xi == 1)] = 255
+    mri_marked = np.copy(mri_img)
+    mri_marked[np.where(Xi == 1)] = 255
 
-    return Xi
+    return mri_marked
