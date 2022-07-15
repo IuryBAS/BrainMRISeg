@@ -104,7 +104,7 @@ O objetivo do método é minimizar o funcional energia
 
 $F(c_{1}$, $c_{2}$, C$)$ = $\mu$*Comprimento(C) + $\lambda_{1}$ * $\int_{inside\ (C)}$ |Image$[x,y]$ - $c_{1}$|$^{2}dxdy$ + $\lambda_{2}$ * $\int_{outside\ (C)}$ |Image$[x,y]$ - $c_{2}$|$^{2}dxdy$
 
-Esta é a ideia por trás do método.
+As iterações vem da abordagem de curvas de nível, que não será explicado aqui.
 
 
 ### Método Watershed
