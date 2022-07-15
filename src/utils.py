@@ -138,20 +138,3 @@ def normalize_img(image, imax=8, dtype=np.uint8):
     img_sub_norm = (img_sub_norm * ((2**imax) - 1)).astype(dtype)
     return img_sub_norm
 
-
-def dilation(f, w):
-    m, n = w.shape
-
-    mf, nf = f.shape
-
-    a = int((m - 1) / 2)
-    b = int((n - 1) / 2)
-
-    r = np.copy(f)
-
-    for xf in range(a, mf - a):
-        for yf in range(b, nf - b):
-            sub_f = f[xf - a: xf + a + 1, yf - b: yf + b + 1]
-            r[xf, yf] = sub_f.max()
-
-    return r.astype(np.uint8)

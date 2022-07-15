@@ -2,6 +2,24 @@ import numpy as np
 from skimage.segmentation import chan_vese
 
 
+def dilation(f, w):
+    m, n = w.shape
+
+    mf, nf = f.shape
+
+    a = int((m - 1) / 2)
+    b = int((n - 1) / 2)
+
+    r = np.copy(f)
+
+    for xf in range(a, mf - a):
+        for yf in range(b, nf - b):
+            sub_f = f[xf - a: xf + a + 1, yf - b: yf + b + 1]
+            r[xf, yf] = sub_f.max()
+
+    return r.astype(np.uint8)
+
+
 def apply_chan_vese(mri_img, point_markers, mu, lambda1, lambda2):
     '''
     Function to apply chan-vese segmentation on input image.
@@ -41,7 +59,7 @@ def apply_chan_vese(mri_img, point_markers, mu, lambda1, lambda2):
 
     flag = True
     while flag:
-        X_i = utils.dilation(Xi, w)
+        X_i = dilation(Xi, w)
         X_i = np.bitwise_and(X_i == 1, mask == 1).astype(np.uint8)
         if np.sum(X_i - Xi) == 0:
             flag = False
