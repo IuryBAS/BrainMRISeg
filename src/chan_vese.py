@@ -2,6 +2,34 @@ import numpy as np
 from skimage.segmentation import chan_vese
 
 
+def normalize_img(image, imax=8, dtype=np.uint8):
+    '''
+    Normalize an image between its maximum and minimum values, and with the
+    specifield caracteristics
+
+    Params:
+        image: An image to be normalized
+        imax: The value of bits to represent the pixel values
+        dtype: The desired dtype of the image
+
+    Returns:
+        A normalized image
+    '''
+    img_max = np.max(image)
+    img_min = np.min(image)
+
+    # Prevents division by 0 when the img_max and img_min have the same value
+    if img_max == img_min:
+        img_sub_norm = (image-img_min) / ((img_max - img_min) + 1e-12)
+
+    else:
+        img_sub_norm = (image-img_min) / (img_max - img_min)
+    # Normalize image accordinly with the maximum bits representation
+    # passed as parameter
+    img_sub_norm = (img_sub_norm * ((2**imax) - 1)).astype(dtype)
+    return img_sub_norm
+
+
 def dilation(f, w):
     m, n = w.shape
 
@@ -65,7 +93,8 @@ def apply_chan_vese(mri_img, point_markers, mu, lambda1, lambda2):
             flag = False
         Xi = X_i
 
+    mri_img = normalize_img(mri_img)
     mri_marked = np.copy(mri_img)
-    mri_marked[np.where(Xi == 1)] = 255
+    mri_marked[np.where(Xi == 1)] = 1
 
     return mri_marked
