@@ -78,9 +78,10 @@ def apply_chan_vese(mri_img, point_markers, mu, lambda1, lambda2):
 
     mask = mask.astype(np.uint8)
 
-    # Point to do morphology, taking the connected part of segmentation
+    # Point to do morphology, taking the connected component of segmentation
     y, x = point_markers
 
+    # Creating a matrix Xi to take the connected component of segmentation
     Xi = np.zeros(mri_img.shape)
     w = np.matrix('0 1 0; 1 1 1; 0 1 0').astype(np.uint8)
     Xi[x, y] = 1
