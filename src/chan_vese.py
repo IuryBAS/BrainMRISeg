@@ -1,6 +1,5 @@
 import numpy as np
 from skimage.segmentation import chan_vese
-import utils
 
 
 def apply_chan_vese(mri_img, point_markers, mu, lambda1, lambda2):
@@ -27,8 +26,6 @@ def apply_chan_vese(mri_img, point_markers, mu, lambda1, lambda2):
     cv = chan_vese(mri_img, mu, lambda1, lambda2, tol=1e-3,
                    max_num_iter=150, dt=0.5, init_level_set="checkerboard",
                    extended_output=True)
-
-    mri_img = utils.normalize_img(mri_img).astype(np.uint8)
 
     mask[np.where(cv[0] == False)] = 1
     mask[np.where(cv[0] == True)] = 0

@@ -169,7 +169,8 @@ def apply_batch_chan_vese(df, subject_id, slices_range, perspective, mu,
     dice_scores = []
 
     for slice, gt_mask in zip(slices_array, masks_array):
-        img_seg = chan_vese.apply_chan_vese(slice, (x, y), mu, lambda1, lambda2)
+        mri_norm = utils.normalize_img(slice)
+        img_seg = chan_vese.apply_chan_vese(mri_norm, (x, y), mu, lambda1, lambda2)
         dice_score = dice_score_similarity(img_seg, gt_mask)
         dice_scores.append(dice_score)
         seg_masks_array.append(img_seg)
