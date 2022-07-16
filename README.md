@@ -16,12 +16,12 @@ Este projeto almeja trabalhar com segmentação de regiões de interesse em imag
 As imagens são provenientes de ressonância magnética (IRM) da região cerebral, de topologia definida por uma malha/grid tridimensional, onde serão extraídas partições (slices) específicos da aquisição, obtendo-se finalmente uma imagem bidimensional para ser processada. Imagens médicas, podem acabar sendo de difícil execução em relação a segmentação, possuindo padrões complexos e diversos casos limítrofes que podem ocasionar errôneas descontinuidades. Ao mesmo tempo, realizar a segmentação manual dessas estruturas é custoso por exigir profissionais especializados, trabalhoso, demorado e entendiante, sendo assim bastante beneficiado por métodos que auxiliem na segmentação assistida a partir de localizações iniciais.
 
 ### Objetivo principal
-Utilizando algoritmos de segmentação como os mensionados posteriormente,
+Utilizando algoritmos de segmentação como os mencionados posteriormente,
  a ideia principal é obter segmentações de interesse a partir de pontos 
-dados pelo operador humano, de qualidade equivalente as realizadas em um
- processo inteiramente manual por um especialista. 
+dados pelo operador humano para uma sequência de _slices_ anteriores, posteriores, ou ambos, de um _slice_ de referência com a lesão de interesse, de qualidade equivalente as realizadas em um
+ processo inteiramente manual por um especialista. Dado as lesões comumente se manifestarem por multiplos _slices_, a segmentação manual é cansativa, tediosa e custosa. A automatização desse processo tem grande valor prático para essa atividade ao obter máscaras de segmentação de aproximação satisfatória.
  Adicionalmente, também objetivamos a exploração de como procedimentos de
- preprocessamento podem auxiliar em melhores resultados na etapa de 
+ pré-processamento podem auxiliar em melhores resultados na etapa de 
 segmentação. Por fim, é de interesse realizar uma análise comparativa 
 entre os métodos de segmentação explorados, bem como entre os resultados
  das segmentações
@@ -71,7 +71,7 @@ Figura 3(a) Imagem exemplo de IRM cerebral de região extraída por meio de inte
     - O conjunto construído é filtrado para conter apenas exemplos que possuam ao menos uma máscara de segmentação presente. Cada paciente pode ter até um máximo de três máscaras providas por especialistas humanos, mas ao menos uma se faz necessária para comparativo como _ground-truth_. Os demais exemplos sem nenhuma máscara são descartados;
     - Os pacientes selecionados e filtrados tem os caminhos dos arquivos `.nii` (extensão para imagens de MRI) agregados aos seus dados no `Dataframe`, tanto para o arquivo MRI T1, como para as máscaras de segmentação.
     - Ao fim do processo têm-se o conjunto de dados pronto para uso nas demais etapas.
-- ### Preprocessamento
+- ### Pré-processamento
     - Utilização de filtros suavizantes, como filtros de média, para retirada de ruídos e segmentar de maneira mais eficiente
     - Como as imagens estão em escala de cinza, limiarizar para a utilização de processos morfológicos sobre a imagem de forma a encontrar bordas e preenchelas. Limiarizar é utilizado também no processo de segmentação por regiões para a escolha de uma semente.
     - Utilizar matrizes das derivadas tanto na utilização da segmentação por watershed, quanto para detectar traços finos e grossos.
@@ -82,16 +82,20 @@ Figura 3(a) Imagem exemplo de IRM cerebral de região extraída por meio de inte
     - Escolher um ponto adequado para pegar a parte conexa da segmentação.
     - Sobrepor a segmentação na imagem original para obter a imagem com máscara da segmentação.
 - ### Segmentação Watershed
-    - Uma imagem previamente preprocessada é utilizada como entrada para este método. Os pré-processamentos podem incluir os diversos procedimentos explicitados anteriormente, em especial a redução de ruídos, cálculo de gradientes para obtenção de mínimos locais e processos morfológicos para obter bordas/fronteiras bem estabelecidas;
+    - Uma imagem previamente pré-processada é utilizada como entrada para este método. Os pré-processamentos podem incluir os diversos procedimentos explicitados anteriormente, em especial a redução de ruídos, cálculo de gradientes para obtenção de mínimos locais e processos morfológicos para obter bordas/fronteiras bem estabelecidas;
     - Também é informado quais os marcadores inicias (sementes) para o início do processo. Dado o objetivo de segmentação guiada, essas sementes devem ser previamente informadas por um operador humano. Ao menos 3 sementes são necessárias: Uma do _background_ real da imagem MRI, isto é, a região que não contem voxeis referentes a região cerebral. Esta primeira semente é automaticamente definida pelo método como sendo o pixel (0, 0); uma semente da região interna do cérebro, porém fora da região de interesse; e uma última semente na região de interesse, sendo essa a região para qual de fato se deseja obter a máscara como resultado. As duas últimas sementes devem ser informadas pelo usuário;
-    - O método _Watershed_ é executado a partir da imagem preprocessada e das sementes informadas, retornando as regiões segmentadas, cada qual com seu respectivo rótulo;
+    - O método _Watershed_ é executado a partir da imagem pré-processada e das sementes informadas, retornando as regiões segmentadas, cada qual com seu respectivo rótulo;
     - O segmento da região de interesse pode então ser aplicado como uma máscara sobre a imagem MRI, extraindo assim apenas a região de interesse.
 - ### Avaliação e comparação dos resultados
-    - Análises quantitativa entre as segmentações geradas pelos métodos de segmentação e as máscaras humanas. 
+    - Análises quantitativa por meio da obtenção de índices Dice de similaridade entre as segmentações geradas pelos métodos de segmentação e as máscaras humanas. O índice Dice de similaridade é amplamente para avaliar métodos de segmentação por meio da comparação de máscaras binárias. 
     - Análise qualitativa  visual das máscaras obtidas quando projetadas sobre a imagem de ressonância e lado a lado com as máscaras de especialistas.
 
 ----------------
 ## Métodos de Segmentação
+
+Nesta seção são apresentados os conceitos gerais dos métodos de segmentação adotados neste projeto: segmentação Chan-Vese e segmentação Watershed. 
+
+### Método Chan-Vese
 Chan-Vese para contorno ativo é um método muito poderoso e flexível, permitindo segmentações de vários tipos de imagens, podendo ser bem útil quando métodos como thresholding ou gradientes não funcionem tão bem.
 
 Tal modelo se baseia na ideia de minimizar um funcional energia, podendo ser reformulado como curvas de nível, tornando assim mais fácil de resolver o problema.
@@ -133,10 +137,25 @@ A ideia é que, obtendo-se uma boa segmentação para um _slice_ especifico, que
 Os casos são definidos no arquivo `args_test.py`, contendo todas as informações necessárias para sua reprodução automática para a execução e avaliação deste projeto. 
  
 ### Resultados
+Nesta seção são apresentados as análises e resultados detalhados de ambos os métodos, com os passos de execução necessários. Ainda, é apresentada uma análise comparativa, avaliada quantitivamente e qualititivamente, entre ambos os métodos.
+
+#### Execução e resultados para a segmentação Chan-Vese
+Devido a extensão das análises, para fins de organização as execuções e resultados são descritos separadamente no [notebook de Casos de teste com Chan-Vese](notebooks/Analise_Casos_Chan_Vese.ipynb)
 
 #### Execução e resultados para a segmentação Watershed
-
 Devido a extensão das análises, para fins de organização as execuções e resultados são descritos separadamente no [notebook de Casos de teste com Watershed](notebooks/Analise_Casos_Watershed.ipynb)
 
-Resultados de execuções preliminares com o método de segmentação Watershed são descritos detalhadamente no [Notebook de teste com Watershed](notebooks/%5BRelatorio%20parcial%5D%20Testes%20watershed.ipynb)
+#### Avaliação comparativa entre Watershed e Chan-Vese
+Devido a extensão das análises, para fins de organização as execuções e resultados são descritos separadamente no [notebook de Análise comparativa Watershed e Chan-Vese](notebooks/Analise_Comparativa_Conjunta.ipynb)
+
+### Discussão e Conclusões
+Os métodos de segmentação apresentados tiveram resultados complementares em diversos casos, com vantagens e desvantagens específicas. Em alguns segmentos, o método watershed obteve maior precisão e fidedignidade a máscara _groundtruth_, principalmente nos casos onde formas eram complexas e possuíam estrutura mais pontiaguda e não arredondada. Contudo, em diversos outros casos, o método Watershed falhou em obter até mesmo alguma máscara significativa, ou apresentou grandes vazamentos para regiões adjacentes de não-interesse. Ainda, para uma execução bem-sucedida, passos de pré-processamento são necessários, o que em cenários reais requer conhecimento específico do operador humano e demanda tempo adicional para encontrar os parâmetros e procedimentos adequados, contudo sem garantir que estes procedimentos acabem por se mostrar efetivos para os demais _slices_, mesmo os imediatamente anteriores ou posteriores. 
+
+O método Chan-Vese apresentou melhores médias nos índices _Dice_ de similaridade, quase sempre retornando alguma máscara em todos os casos e _slices_. Apesar de ter resultados com máscaras diversas vezes com formatos mais arredondados que o _groundtruth_, uma etapa de pós-processamento para refino dessas regiões por um agente humano poderia ser efetiva e não demasiadamente custosa. Ainda, apesar de um tempo de execução maior, o método Chan-Vese obteve resultados satisfatórios mesmo sem praticamente nenhuma etapa de pré-processamento, evitando o requisito de um operador humano com esse conhecimento e o tempo necessário dedicado a procura dos parâmetros adequados.
+
+#### Referências
+
+Pérez-García F., Rodionov R., Alim-Marvasti A., Sparks R., Duncan J.S., Ourselin S. (2020) Simulation of Brain Resection for Cavity Segmentation Using Self-supervised and Semi-supervised Learning. In: Martel A.L. et al. (eds) Medical Image Computing and Computer Assisted Intervention – MICCAI 2020. Lecture Notes in Computer Science, vol 12263. Springer, Cham. https://doi.org/10.1007/978-3-030-59716-0_12
+
+Pérez-García F., Rodionov R., Alim-Marvasti A., Sparks R., Duncan J.S., Ourselin S. EPISURG: MRI dataset for quantitative analysis of resective neurosurgery for refractory epilepsy. University College London (2020). DOI 10.5522/04/9996158.v1
 
