@@ -93,7 +93,7 @@ Figura 3(a) Imagem exemplo de IRM cerebral de região extraída por meio de inte
 ----------------
 ## Métodos de Segmentação
 
-Nesta seção são apresentados os conceitos gerais dos métodos de segmentação adotados neste projeto: segmentação Chan-Vese e segmentação Watershed. 
+Nesta seção são apresentados os conceitos gerais dos métodos de segmentação adotados neste projeto: segmentação Chan-Vese e segmentação Watershed. Estes métodos de segmentação foram selecionados por permitirem o uso de sementes (ou marcadores) em alguma etapa do seu processo, possibilitando assim o objetivo de segmentação assistida e inserção do conhecimento de um operador humano no processo automatizado da segmentação, indicando a região de interesse explicitamente. 
 
 ### Método Chan-Vese
 Chan-Vese para contorno ativo é um método muito poderoso e flexível, permitindo segmentações de vários tipos de imagens, podendo ser bem útil quando métodos como thresholding ou gradientes não funcionem tão bem.
@@ -135,7 +135,9 @@ Um _slice_ de referência foi selecionado para cada caso de teste. A partir dess
 A ideia é que, obtendo-se uma boa segmentação para um _slice_ especifico, que os mesmos procedimentos e parâmetros possam ser executados em slices anteriores ou posteriores que também contenham a lesão de interesse. Desta forma, estima-se que possa ser automatizada uma segmentação em _batch_ da mesma lesão a medida que se manifesta em diversos _slices_.
 
 Os casos são definidos no arquivo `args_test.py`, contendo todas as informações necessárias para sua reprodução automática para a execução e avaliação deste projeto. 
- 
+
+Os casos de testes podem ser executados por meio dos notebooks apresentados a seguir para ambos os métodos de segmentação, bem como por meio da execução do arquivo `run_segmentation.py` dentro do diretório `src`. Neste último, a execução esta definida para executar ambos os métodos de segmentação para cada um dos casos de teste. O processo pode ser demorado. Arquivos com as figuras do mosaico de gráficos são gravados no diretório `src` ao longo da execução para facilitar a visualização dos resultados.
+
 ### Resultados
 Nesta seção são apresentados as análises e resultados detalhados de ambos os métodos, com os passos de execução necessários. Ainda, é apresentada uma análise comparativa, avaliada quantitivamente e qualititivamente, entre ambos os métodos.
 
@@ -152,6 +154,11 @@ Devido a extensão das análises, para fins de organização as execuções e re
 Os métodos de segmentação apresentados tiveram resultados complementares em diversos casos, com vantagens e desvantagens específicas. Em alguns segmentos, o método watershed obteve maior precisão e fidedignidade a máscara _groundtruth_, principalmente nos casos onde formas eram complexas e possuíam estrutura mais pontiaguda e não arredondada. Contudo, em diversos outros casos, o método Watershed falhou em obter até mesmo alguma máscara significativa, ou apresentou grandes vazamentos para regiões adjacentes de não-interesse. Ainda, para uma execução bem-sucedida, passos de pré-processamento são necessários, o que em cenários reais requer conhecimento específico do operador humano e demanda tempo adicional para encontrar os parâmetros e procedimentos adequados, contudo sem garantir que estes procedimentos acabem por se mostrar efetivos para os demais _slices_, mesmo os imediatamente anteriores ou posteriores. 
 
 O método Chan-Vese apresentou melhores médias nos índices _Dice_ de similaridade, quase sempre retornando alguma máscara em todos os casos e _slices_. Apesar de ter resultados com máscaras diversas vezes com formatos mais arredondados que o _groundtruth_, uma etapa de pós-processamento para refino dessas regiões por um agente humano poderia ser efetiva e não demasiadamente custosa. Ainda, apesar de um tempo de execução maior, o método Chan-Vese obteve resultados satisfatórios mesmo sem praticamente nenhuma etapa de pré-processamento, evitando o requisito de um operador humano com esse conhecimento e o tempo necessário dedicado a procura dos parâmetros adequados.
+
+#### Atividades dos participantes
+> **Iury Andrade:** Escrita do readme, seleção do conjunto de dados, desenvolvimentos dos processos do método watershed, participação no vídeo de apresentação do projeto
+
+> **Rodrigo Duarte:** Escrita do Readme, desenvolvimentos dos processos do método Chan-Vese, participação do vídeo de apresentação do projeto
 
 #### Referências
 
